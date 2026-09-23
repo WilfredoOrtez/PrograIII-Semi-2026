@@ -74,7 +74,57 @@
         e.preventDefault();
         limpiarFormulario();
     });
+    txtBuscarCliente.addEventListener('keyup',(e)=>{
+        e.preventDefault();
+        obtenerClientes();
+    });
+
+    async function obtenerClientes(){
+        let response = await fetch('/clientes'),
+        datos = await response.json();
+        mostrarDatos(datos);
+    }
     
+    function mostrarDatos(Datos){
+        let filas = '';
+        datos.forEach(e => {
+            filas += `<tr>
+                <td>${cliente.codigo}</td>
+                <td>${cliente.nombre}</td>
+                <td>${cliente.direccion}</td>
+                <td>${cliente.telefono}</td>
+                <td>${cliente.email}</td>
+                <td>${cliente.tipo}</td>
+                <td>
+                    <button onClick = "eliminarCliente('${JSON.stringify(e)}', event)"
+                        type="botton" value="DEL" class="btn btn-danger"</button>
+                    </td>
+            </tr>`;
+        });
+        tblClientes.innerHTML = filas;
+    }
+
+    function modificarCliente(data, event){
+        event.preventDefault();
+        accion = 'modificar';
+        idCliente = data.idCliente;
+        txtCodigoCliente.value = data.codigo;
+        txtNombreCliente.value = data.nombre;
+        txtDireccionCliente.value = data.direccion;
+        txtTelefonoCliente.value = data.telefono;
+        txtEmailCliente.value = data.email;
+        cboTipoPersona.value = data.tipo;
+    }
+
+    function EliminarCliente(data, event){
+        event.preventDefault();
+        if(confirm('¿Seguro eliminar el cliente: ${data.nombre}?')){
+            idCliente = data.idCliente;
+            accion = 'eliminar';
+            guardarClientes();
+        }
+    }
+
     async function guardarClientes(){
         let datos = {
             codigo: txtCodigoCliente.value,
@@ -85,7 +135,7 @@
             tipo: cboTipoPersona.value,
             accion,
             idCliente
-        };
+        }
         let response = await fetch('/cliente',{
             method:'POST',
             headers:{
@@ -97,6 +147,7 @@
             alert("Error: "+ respuesta.msg);
             return;
         }
+        obtenerClientes();
         limpiarFormulario();
     }
     function limpiarFormulario(){
