@@ -5,7 +5,14 @@ db = conexion.Conexion()
 
 class crud_clientes:
     def consultar(self, buscar):
-        return db.consultar(f"SELECT * FROM clientes WHERE nombre LIKE '%{buscar}%'")
+        return db.consultar(
+        """
+        SELECT * FROM clientes
+        WHERE nombre LIKE %s
+           OR codigo LIKE %s
+        """,
+        (f"%{buscar}%", f"%{buscar}%")
+    )
 
     def administrar(self, datos):
         try:
