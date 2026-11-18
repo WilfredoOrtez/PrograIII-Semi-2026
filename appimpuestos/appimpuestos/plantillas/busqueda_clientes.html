@@ -47,13 +47,13 @@
     obtenerClientes();
 
     async function obtenerClientes(buscar = "") {
-        let response = await fetch(`/buscar_clientes/${buscar}`),
+        let response = await fetch(`busqueda_clientes/?buscar=${buscar}`),
             datos = await response.json();
         mostrarDatos(datos);
     }
-    function mostrarDatos(datos) {
+    function mostrarDatos(alumnos) {
         let filas = "";
-        datos.forEach(e => {
+        alumnos.forEach(e => {
             filas += `
                 <tr onClick='modificarCliente(${JSON.stringify(e)}, event)'>
                     <td>${e.codigo}</td>
@@ -74,7 +74,7 @@
     function eliminarCliente(data, event) {
         event.preventDefault();
         if (confirm(`¿Seguro de eliminar al cliente: ${data.nombre}?`)) {
-            idCliente = data.idCliente;
+            id = data.id;
             accion = "eliminar";
             guardarClientes();
         }
